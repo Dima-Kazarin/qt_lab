@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>recources/close.png</file>
+        <file>recources/new.png</file>
+        <file>recources/open.png</file>
+        <file>recources/save.png</file>
+        <file>recources/save_as.png</file>
+    </qresource>
+</RCC>
