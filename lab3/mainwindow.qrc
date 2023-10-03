@@ -5,5 +5,13 @@
         <file>recources/open.png</file>
         <file>recources/save.png</file>
         <file>recources/save_as.png</file>
+        <file>recources/lower.png</file>
+        <file>recources/upper.png</file>
+        <file>recources/enlarge.png</file>
+        <file>recources/reduce.png</file>
+        <file>recources/clear.png</file>
+        <file>recources/replace.png</file>
+        <file>recources/about.png</file>
+        <file>recources/help.png</file>
     </qresource>
 </RCC>

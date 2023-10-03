@@ -4,8 +4,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    this->setFixedSize(700, 600);
-
     createActions();
     createMenu();
     createTools();
@@ -17,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     text_edit = new QTextEdit();
     text_edit->setFixedSize(QSize(400, 450));
     text_edit->setFontPointSize(8);
+    text_edit->setReadOnly(true);
 
     file_name_label = new QLabel("new_file.txt");
     file_name_label->setFixedSize(QSize(400, 10));
@@ -36,15 +35,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(clear_text, &QAction::triggered, this, &MainWindow::clearText);
     connect(to_upper, &QAction::triggered, this, &MainWindow::convertTextToUpper);
     connect(to_lower, &QAction::triggered, this, &MainWindow::convertTextToLower);
-    connect(clear, &QToolButton::clicked, this, &MainWindow::clearText);
-    connect(upper, &QToolButton::clicked, this, &MainWindow::convertTextToUpper);
-    connect(lower, &QToolButton::clicked, this, &MainWindow::convertTextToLower);
     connect(about, &QAction::triggered, this, &MainWindow::showAboutDialog);
     connect(help_box, &QAction::triggered, this, &MainWindow::showHelpDialog);
     connect(enlarge, &QAction::triggered, this, &MainWindow::enlargeFont);
     connect(reduce, &QAction::triggered, this, &MainWindow::reduceFont);
-    connect(enlarge_font, &QToolButton::clicked, this, &MainWindow::enlargeFont);
-    connect(reduce_font, &QToolButton::clicked, this, &MainWindow::reduceFont);
     connect(text_edit, &QTextEdit::textChanged, this, &MainWindow::markUnsavedChanges);
     connect(replace_text, &QAction::triggered, this, &MainWindow::replaceText);
 }
@@ -69,14 +63,22 @@ void MainWindow::createActions()
     close_file->setShortcut(QKeySequence::Close);
 
     clear_text = new QAction("&Clear");
+    clear_text->setIcon(QIcon(":/icons/recources/clear.png"));
     to_upper = new QAction("&To upper");
+    to_upper->setIcon(QIcon(":/icons/recources/upper.png"));
     to_lower = new QAction("&To lower");
+    to_lower->setIcon(QIcon(":/icons/recources/lower.png"));
     enlarge = new QAction("&Enlarge font");
+    enlarge->setIcon(QIcon(":/icons/recources/enlarge.png"));
     reduce = new QAction("&Reduce font");
+    reduce->setIcon(QIcon(":/icons/recources/reduce.png"));
     replace_text = new QAction("&Replace text");
+    replace_text->setIcon(QIcon(":/icons/recources/replace.png"));
 
     about = new QAction("&About");
+    about->setIcon(QIcon(":/icons/recources/about.png"));
     help_box = new QAction("&Help");
+    help_box->setIcon(QIcon(":/icons/recources/help.png"));
 }
 
 
@@ -117,35 +119,59 @@ void MainWindow::createMenu()
 void MainWindow::createTools()
 {
     tools = addToolBar("Tools");
-    tools->addAction(create_file);
-    tools->addAction(open_file);
-    tools->addAction(save_file);
-    tools->addAction(save_file_as);
-    tools->addAction(close_file);
+    tools->addAction(enlarge);
+    tools->addAction(reduce);
+    tools->addAction(clear_text);
+    tools->addAction(to_upper);
+    tools->addAction(to_lower);
 }
 
 
 void MainWindow::createDockWidget()
 {
+    create_f = new QToolButton();
+    create_f->setDefaultAction(create_file);
+    create_f->setFixedSize(QSize(50, 50));
+
+    open_f = new QToolButton();
+    open_f->setDefaultAction(open_file);
+    open_f->setFixedSize(QSize(50, 50));
+
+    save_f = new QToolButton();
+    save_f->setDefaultAction(save_file);
+    save_f->setFixedSize(QSize(50, 50));
+
+    save_as_f = new QToolButton();
+    save_as_f->setDefaultAction(save_file_as);
+    save_as_f->setFixedSize(QSize(50, 50));
+
+    close_f = new QToolButton();
+    close_f->setDefaultAction(close_file);
+    close_f->setFixedSize(QSize(50, 50));
+
     clear = new QToolButton();
-    clear->setText("C");
-    clear->setFixedSize(QSize(50,50));
+    clear->setDefaultAction(clear_text);
+    clear->setFixedSize(QSize(50, 50));
 
     upper = new QToolButton();
-    upper->setText("UP");
-    upper->setFixedSize(QSize(50,50));
+    upper->setDefaultAction(to_upper);
+    upper->setFixedSize(QSize(50, 50));
 
     lower = new QToolButton();
-    lower->setText("low");
-    lower->setFixedSize(QSize(50,50));
+    lower->setDefaultAction(to_lower);
+    lower->setFixedSize(QSize(50 ,50));
 
     enlarge_font = new QToolButton();
-    enlarge_font->setText("A↑");
-    enlarge_font->setFixedSize(QSize(50,50));
+    enlarge_font->setDefaultAction(enlarge);
+    enlarge_font->setFixedSize(QSize(50, 50));
 
     reduce_font = new QToolButton();
-    reduce_font->setText("a↓");
-    reduce_font->setFixedSize(QSize(50,50));
+    reduce_font->setDefaultAction(reduce);
+    reduce_font->setFixedSize(QSize(50, 50));
+
+    replace = new QToolButton();
+    replace->setDefaultAction(replace_text);
+    replace->setFixedSize(QSize(50, 50));
 
     dock_grid = new QGridLayout();
     dock_grid->addWidget(enlarge_font, 0, 0);
@@ -153,9 +179,10 @@ void MainWindow::createDockWidget()
     dock_grid->addWidget(clear, 2, 0);
     dock_grid->addWidget(upper, 3, 0);
     dock_grid->addWidget(lower, 4, 0);
+    dock_grid->addWidget(replace, 5, 0);
     dock_grid->setAlignment(Qt::AlignLeft|Qt::AlignTop);
 
-    dock = new QDockWidget("Dock", this);
+    dock = new QDockWidget("Edit", this);
     dock->setAllowedAreas(Qt::LeftDockWidgetArea);
     dock->setFixedSize(QSize(200, 500));
 
@@ -163,6 +190,23 @@ void MainWindow::createDockWidget()
     dock_widget->setLayout(dock_grid);
     dock->setWidget(dock_widget);
     this->addDockWidget(Qt::LeftDockWidgetArea, dock);
+
+    dock_layout = new QHBoxLayout();
+    dock_layout->addWidget(create_f);
+    dock_layout->addWidget(open_f);
+    dock_layout->addWidget(save_f);
+    dock_layout->addWidget(save_as_f);
+    dock_layout->addWidget(close_f);
+
+    dock_file = new QDockWidget("File", this);
+    dock_file->setAllowedAreas(Qt::TopDockWidgetArea);
+    dock_file->setFixedSize(QSize(300, 90));
+
+    dock_file_widget = new QWidget(dock_file);
+    dock_file_widget->setLayout(dock_layout);
+    dock_file->setWidget(dock_file_widget);
+    this->addDockWidget(Qt::TopDockWidgetArea, dock_file);
+    this->setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
 }
 
 
@@ -278,6 +322,7 @@ void MainWindow::clearText()
 void MainWindow::create()
 {
     text_edit->clear();
+    text_edit->setReadOnly(false);
     save_file->setEnabled(false);
     file_name_label->setText("new_file.txt");
     status_bar->showMessage("Created new file");
@@ -340,6 +385,7 @@ void MainWindow::save_as()
 
 void MainWindow::open()
 {
+    text_edit->setReadOnly(false);
     QString file_name = QFileDialog::getOpenFileName(this, tr("Open file"), QString(), tr("Text files (*.txt)"));
     if (!file_name.isEmpty())
     {

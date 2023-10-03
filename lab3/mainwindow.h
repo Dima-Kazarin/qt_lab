@@ -19,6 +19,7 @@
 #include <QLabel>
 #include <QFileInfo>
 #include <QInputDialog>
+#include <QHBoxLayout>
 
 
 class MainWindow : public QMainWindow
@@ -38,14 +39,15 @@ private:
     QAction *create_file, *open_file, *save_file, *save_file_as, *close_file, *clear_text, *to_upper, *to_lower,
         *enlarge, *reduce, *about, *help_box, *replace_text;
     QTextEdit *text_edit;
-    QToolButton *enlarge_font, *reduce_font, *clear, *upper, *lower;
+    QToolButton *enlarge_font, *reduce_font, *clear, *upper, *lower, *replace, *create_f, *open_f, *save_f, *save_as_f, *close_f;
     QGridLayout *dock_grid;
-    QDockWidget *dock;
-    QWidget *dock_widget;
+    QDockWidget *dock, *dock_file;
+    QWidget *dock_widget, *dock_file_widget;
     QString current_file_name;
     QLabel *file_name_label;
     QGroupBox *group_box;
     QVBoxLayout *layout;
+    QHBoxLayout *dock_layout;
     bool unsaved_changes;
     QStatusBar *status_bar;
 
